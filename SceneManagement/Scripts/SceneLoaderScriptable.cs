@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Sirenix.Serialization;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -37,21 +38,24 @@ public class SceneLoaderScriptable : ScriptableObject {
     }
 
 
-    public void StartLoadAsync( string id, SceneDelegate sceneCallback = null ) {
-        Loader.StartCoroutine( LoadAsync( id, sceneCallback ) );
+    public void StartLoadAsync( string[] ids, SceneDelegate sceneCallback = null )
+    {
+        var required = ids.Length;
+        var current = 0;
+        foreach ( var id in ids ) {
+            Loader.StartCoroutine(LoadAsync(id, () => {
+                    current++;
+                    if (required == current) 
+                        sceneCallback?.Invoke();
+                }
+            ) );   
+        }
     }
 
     private IEnumerator LoadAsync( string id, SceneDelegate sceneCallback = null ) {
         loader = SceneManager.LoadSceneAsync( id, LoadSceneMode.Single );
-//        //loader.allowSceneActivation = false;
-//        while ( !loader.isDone ) {
-//            yield return new WaitForEndOfFrame();
-//        }
         yield return loader;
-        //loader.allowSceneActivation = true;
-        if ( sceneCallback != null ) {
-            sceneCallback();
-        }
+        sceneCallback?.Invoke();
     }
 
     public void StartLoading() {
@@ -61,7 +65,9 @@ public class SceneLoaderScriptable : ScriptableObject {
     }
 
     public void LoadScene( SceneDataScriptable scene, LoadSceneMode mode ) {
-        SceneManager.LoadScene( scene.sceneId, mode );
+        foreach ( var sceneId in scene.sceneIds ) {
+            SceneManager.LoadScene( sceneId, mode );    
+        }
         if ( mode == LoadSceneMode.Additive ) {
             SceneManager.SetActiveScene( scene.Scene );
         }
@@ -95,7 +101,7 @@ public class SceneLoaderScriptable : ScriptableObject {
             yield return new WaitForFixedUpdate();
         }
 
-        StartLoadAsync( data.sceneId /*, ()=>UnloadScene(data.loadingSceneId)*/ );
+        StartLoadAsync( data.sceneIds /*, ()=>UnloadScene(data.loadingSceneId)*/ );
     }
 
     public void UnloadScene( string target ) {

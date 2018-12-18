@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Sirenix.OdinInspector;
 using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
@@ -17,8 +18,8 @@ public class SceneDataScriptable : NavigationAction {
     [OnValueChanged( "LoadSceneModeChanged" ), HideIf("loadingScreen")]
     public LoadSceneMode mode;
     public string levelName;
-    [ValueDropdown( "e_currentScenes" ), ValidateInput( "ValidateSceneId", "Scene is not in build settings and will cause an exception at runtime if used." )]
-    public string sceneId;
+    [ValueDropdown( "e_currentScenes" ), ValidateInput( "ValidateSceneId", "Scene is not in build settings and will cause an exception at runtime if used." ), Required]
+    public string[] sceneIds;
     [ValueDropdown( "e_currentScenes" ), ValidateInput( "ValidateSceneId", "Scene is not in build settings and will cause an exception at runtime if used." ), 
      ShowIf("loadingScreen")]
     public string loadingSceneId;
@@ -41,8 +42,11 @@ public class SceneDataScriptable : NavigationAction {
         }
     }
 
-    private bool ValidateSceneId( string id ) {
-        return e_currentScenes.Contains( id );
+    private bool ValidateSceneId( string[] ids ) {
+        foreach ( var id in ids ) {
+            if ( !e_currentScenes.Contains(id) ) return false;
+        }
+        return true;
     }
 
     private string GetSceneName( EditorBuildSettingsScene scene ) {
@@ -54,11 +58,12 @@ public class SceneDataScriptable : NavigationAction {
         return output;
     }
 #endif
+    [Required]
     public SceneLoaderScriptable sceneManager;
 
     public Scene Scene {
         get {
-            return SceneManager.GetSceneByName( sceneId );
+            return SceneManager.GetSceneByName( sceneIds[0] );
         }
     }
 

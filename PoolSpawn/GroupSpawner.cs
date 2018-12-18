@@ -21,6 +21,8 @@ public abstract class GroupSpawner<T, W> : Spawner<T, W> where T : Pool<W> where
     }
     private bool isSpawning = false;
 
+    protected abstract float Speed { get; }
+
     public override void SpawnObject() {
         StopSpawning();
         StartCoroutine( SpawnGroup( Configuration.GenerateSpawnObjects ) );
@@ -32,12 +34,12 @@ public abstract class GroupSpawner<T, W> : Spawner<T, W> where T : Pool<W> where
         float separation = SeparationY;
         isSpawning = true;
         currentWave++;
-        ConsoleProDebug.Watch( "Wave", currentWave.ToString() );
+        //ConsoleProDebug.Watch( "Wave", currentWave.ToString() );
         OnGroupSpawn?.Invoke( currentWave );
         foreach( var cell in generator.Invoke() ) {
             if( row != cell.row ) {
                 if( row != -1 ) {
-                    yield return new WaitForSeconds( separation / GlobalGameManager.GameSpeed );
+                    yield return new WaitForSeconds( separation / Speed );
                 }
                 row = cell.row;
                 separation = SeparationY;
