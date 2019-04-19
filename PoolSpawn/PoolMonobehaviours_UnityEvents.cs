@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public class PoolMonobehaviours_UnityEvents : MonoBehaviour {
-    public UnityEvent OnSpawn = new UnityEvent(), OnDespawn = new UnityEvent();
+    public UnitySpawnEvent OnSpawn, OnDespawn ;
     private PoolMonoBehaviour poolMono;
 
     private void Awake() {
@@ -12,23 +12,15 @@ public class PoolMonobehaviours_UnityEvents : MonoBehaviour {
     }
 
     private void OnEnable() {
-        poolMono.OnSpawn += PoolMono_OnSpawn;;
-        poolMono.OnDespawn += PoolMono_OnDespawn;;
+        poolMono.OnSpawn += OnSpawn.Invoke;
+        poolMono.OnDespawn += OnDespawn.Invoke;
     }
 
     private void OnDisable() {
-        poolMono.OnSpawn -= PoolMono_OnSpawn;
-        poolMono.OnDespawn -= PoolMono_OnDespawn;
+        poolMono.OnSpawn -= OnSpawn.Invoke;
+        poolMono.OnDespawn -= OnDespawn.Invoke;
     }
-
-    private void PoolMono_OnDespawn() {
-        OnSpawn.Invoke();
-    }
-
-
-    private void PoolMono_OnSpawn() {
-        OnDespawn.Invoke();
-    }
-
-
 }
+
+[System.Serializable]
+public class UnitySpawnEvent : UnityEvent<PoolMonoBehaviour> { }

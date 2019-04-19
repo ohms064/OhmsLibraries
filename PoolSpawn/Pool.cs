@@ -16,80 +16,96 @@ public abstract class Pool<T> : MonoBehaviour where T : PoolMonoBehaviour {
 #endif
     [ShowInInspector, HideInEditorMode, DisableInPlayMode]
     protected T[] pool;
-    private int iterator = 0;
+    protected Queue<T> poolQueue;
 
 #if UNITY_EDITOR && ODIN_INSPECTOR
-    private bool ValidatePoolSize ( int i ) {
+    private bool ValidatePoolSize( int i ) {
         return i > 0;
     }
 #endif
 
     public override string ToString() {
         StringBuilder builder = new StringBuilder();
-        for ( int i = 0; i < PoolMonoBehaviours.Length;  i++){
+        for ( int i = 0; i < PoolMonoBehaviours.Length; i++ ) {
             builder.AppendFormat( "{0} ", PoolMonoBehaviours[i].name );
         }
         return builder.ToString();
     }
 
-    public IEnumerable<T> GetUnavailableObjects () {
+    /// <summary>
+    /// Generator which returns the unavailable objects in the array.
+    /// </summary>
+    /// <returns>The unavailable objects.</returns>
+    public IEnumerable<T> GetUnavailableObjects() {
         for ( int i = 0; i < pool.Length; i++ ) {
             if ( !pool[i].Available )
                 yield return pool[i];
         }
     }
 
-    public IEnumerable<T> GetAvailableObjects () {
+    /// <summary>
+    /// Generator which returns the available objects in the array.
+    /// </summary>
+    /// <returns>The available objects.</returns>
+    public IEnumerable<T> GetAvailableObjects() {
         for ( int i = 0; i < pool.Length; i++ ) {
             if ( pool[i].Available )
                 yield return pool[i];
         }
     }
 
-    public virtual bool RequestPoolMonoBehaviour ( out T PoolMonoBehaviour ) {
-        if ( pool == null ) {
+    public virtual bool RequestPoolMonoBehaviour( out T PoolMonoBehaviour ) {
+        if ( poolQueue == null || poolQueue.Count == 0 ) {
             PoolMonoBehaviour = null;
             return false;
         }
-        if ( iterator >= pool.Length ) {
-            iterator = 0;
-        }
-        DebugManager.LogFormat( "Getting object {0} from pool", iterator );
-        PoolMonoBehaviour = pool[iterator];
-        iterator++;
+        PoolMonoBehaviour = poolQueue.Dequeue();
         return PoolMonoBehaviour.Available;
     }
 
-    protected abstract void InstantiateObjects ();
+    protected abstract void InstantiateObjects();
 
-    public void RegisterOnSpawn(System.Action OnSpawn){
-        for ( int i = 0; i < pool.Length;  i++){
+    /// <summary>
+    /// Register an OnSpawn event on all the objects in the pool.
+    /// </summary>
+    /// <param name="OnSpawn">On spawn.</param>
+    public void RegisterOnSpawn( System.Action<PoolMonoBehaviour> OnSpawn ) {
+        for ( int i = 0; i < pool.Length; i++ ) {
             pool[i].OnSpawn += OnSpawn;
         }
     }
 
-    public void UnregisterOnSpawn( System.Action OnSpawn ) {
+    /// <summary>
+    /// Unregisters an OnSpawn event on all the objects in the pool.
+    /// </summary>
+    /// <param name="OnSpawn">On spawn.</param>
+    public void UnregisterOnSpawn( System.Action<PoolMonoBehaviour> OnSpawn ) {
         for ( int i = 0; i < pool.Length; i++ ) {
             pool[i].OnSpawn -= OnSpawn;
         }
     }
 
-    public void RegisterOnDespawn( System.Action OnDespawn ) {
+    public void RegisterOnDespawn( System.Action<PoolMonoBehaviour> OnDespawn ) {
         Debug.Log( "Registrando evento" );
         for ( int i = 0; i < pool.Length; i++ ) {
             pool[i].OnDespawn += OnDespawn;
         }
     }
 
-    public void UnregisterOnDespawn( System.Action OnDespawn ) {
+    public void UnregisterOnDespawn( System.Action<PoolMonoBehaviour> OnDespawn ) {
         for ( int i = 0; i < pool.Length; i++ ) {
             pool[i].OnDespawn -= OnDespawn;
         }
     }
+
+    protected void ReturnToQueue( PoolMonoBehaviour o ) {
+        poolQueue.Enqueue( o as T );
+    }
 }
 
 public abstract class PoolMonoBehaviour : MonoBehaviour {
-    public event System.Action OnSpawn, OnDespawn;
+    public event System.Action<PoolMonoBehaviour> OnSpawn, OnDespawn;
+    public System.Action<PoolMonoBehaviour> OnPoolReturnRequest;
     //Disponible para el pool
     public virtual bool Available {
         get {
@@ -100,22 +116,30 @@ public abstract class PoolMonoBehaviour : MonoBehaviour {
         }
     }
 
-    public virtual void Spawn ( Vector3 position ) {
+    public virtual void Spawn( Vector3 position ) {
         Available = false;
         transform.position = position;
         CallOnSpawnEvent();
     }
 
-    public virtual void Despawn () {
+    public virtual void Spawn( Vector3 position, Quaternion rotation ) {
+        Available = false;
+        transform.position = position;
+        transform.rotation = rotation;
+        CallOnSpawnEvent();
+    }
+
+    public virtual void Despawn() {
         CallOnDespawnEvent();
         Available = true;
     }
 
-    protected void CallOnDespawnEvent () {
-        OnDespawn?.Invoke();
+    protected void CallOnDespawnEvent() {
+        OnPoolReturnRequest.Invoke( this );
+        OnDespawn?.Invoke(this);
     }
 
-    protected void CallOnSpawnEvent () {
-        OnSpawn?.Invoke();
+    protected void CallOnSpawnEvent() {
+        OnSpawn?.Invoke(this);
     }
 }
