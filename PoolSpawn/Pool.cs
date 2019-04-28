@@ -15,7 +15,7 @@ public abstract class Pool<T> : MonoBehaviour where T : PoolMonoBehaviour {
     public T[] PoolMonoBehaviours;
 #endif
     [ShowInInspector, HideInEditorMode, DisableInPlayMode]
-    protected T[] pool;
+    protected List<T> pool;
     protected Queue<T> poolQueue;
 
 #if UNITY_EDITOR && ODIN_INSPECTOR
@@ -37,7 +37,7 @@ public abstract class Pool<T> : MonoBehaviour where T : PoolMonoBehaviour {
     /// </summary>
     /// <returns>The unavailable objects.</returns>
     public IEnumerable<T> GetUnavailableObjects() {
-        for ( int i = 0; i < pool.Length; i++ ) {
+        for ( int i = 0; i < pool.Count; i++ ) {
             if ( !pool[i].Available )
                 yield return pool[i];
         }
@@ -48,7 +48,7 @@ public abstract class Pool<T> : MonoBehaviour where T : PoolMonoBehaviour {
     /// </summary>
     /// <returns>The available objects.</returns>
     public IEnumerable<T> GetAvailableObjects() {
-        for ( int i = 0; i < pool.Length; i++ ) {
+        for ( int i = 0; i < pool.Count; i++ ) {
             if ( pool[i].Available )
                 yield return pool[i];
         }
@@ -70,7 +70,7 @@ public abstract class Pool<T> : MonoBehaviour where T : PoolMonoBehaviour {
     /// </summary>
     /// <param name="OnSpawn">On spawn.</param>
     public void RegisterOnSpawn( System.Action<PoolMonoBehaviour> OnSpawn ) {
-        for ( int i = 0; i < pool.Length; i++ ) {
+        for ( int i = 0; i < pool.Count; i++ ) {
             pool[i].OnSpawn += OnSpawn;
         }
     }
@@ -80,21 +80,27 @@ public abstract class Pool<T> : MonoBehaviour where T : PoolMonoBehaviour {
     /// </summary>
     /// <param name="OnSpawn">On spawn.</param>
     public void UnregisterOnSpawn( System.Action<PoolMonoBehaviour> OnSpawn ) {
-        for ( int i = 0; i < pool.Length; i++ ) {
+        for ( int i = 0; i < pool.Count; i++ ) {
             pool[i].OnSpawn -= OnSpawn;
         }
     }
 
     public void RegisterOnDespawn( System.Action<PoolMonoBehaviour> OnDespawn ) {
         Debug.Log( "Registrando evento" );
-        for ( int i = 0; i < pool.Length; i++ ) {
+        for ( int i = 0; i < pool.Count; i++ ) {
             pool[i].OnDespawn += OnDespawn;
         }
     }
 
     public void UnregisterOnDespawn( System.Action<PoolMonoBehaviour> OnDespawn ) {
-        for ( int i = 0; i < pool.Length; i++ ) {
+        for ( int i = 0; i < pool.Count; i++ ) {
             pool[i].OnDespawn -= OnDespawn;
+        }
+    }
+
+    public void UnspawnAll() {
+        foreach ( var obj in GetUnavailableObjects() ) {
+            obj.Despawn();
         }
     }
 
@@ -136,10 +142,10 @@ public abstract class PoolMonoBehaviour : MonoBehaviour {
 
     protected void CallOnDespawnEvent() {
         OnPoolReturnRequest.Invoke( this );
-        OnDespawn?.Invoke(this);
+        OnDespawn?.Invoke( this );
     }
 
     protected void CallOnSpawnEvent() {
-        OnSpawn?.Invoke(this);
+        OnSpawn?.Invoke( this );
     }
 }

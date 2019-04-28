@@ -24,10 +24,10 @@ public class ObjectsPool<T> : Pool<T> where T : PoolMonoBehaviour {
     /// <summary>
     /// Creates all the objects to be used in the pool.
     /// </summary>
-    protected override void InstantiateObjects () {
+    protected override void InstantiateObjects() {
         poolQueue = new Queue<T>();
         if ( evenlyCreate ) {
-            pool = new T[poolSize * PoolMonoBehaviours.Length];
+            pool = new List<T>( poolSize * PoolMonoBehaviours.Length );
             for ( int i = 0; i < PoolMonoBehaviours.Length; i++ ) {
                 for ( int j = 0; j < poolSize; j++ ) {
                     var index = i * poolSize + j;
@@ -39,7 +39,7 @@ public class ObjectsPool<T> : Pool<T> where T : PoolMonoBehaviour {
             }
         }
         else {
-            pool = new T[poolSize];
+            pool = new List<T>( poolSize );
             for ( int i = 0; i < poolSize; i++ ) {
                 pool[i] = Instantiate( PoolMonoBehaviour );
                 pool[i].Available = true;
