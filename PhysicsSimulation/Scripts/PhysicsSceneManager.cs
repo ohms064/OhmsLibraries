@@ -132,7 +132,7 @@ public class PhysicsSceneManager : MonoBehaviour {
             position = simulationTransform.position,
             rotation = simulationTransform.rotation
         };
-        DebugGraph.Log( "Simulated Position", simData.position );
+        //DebugGraph.Log( "Simulated Position", simData.position );
         //Debug.Log( $"Position {simData.position}" );
         OnSimluationStep?.Invoke( simData );
         data.Add( simData );
