@@ -30,20 +30,21 @@ public class ObjectsPool<T> : Pool<T> where T : PoolMonoBehaviour {
             pool = new List<T>( poolSize * PoolMonoBehaviours.Length );
             for ( int i = 0; i < PoolMonoBehaviours.Length; i++ ) {
                 for ( int j = 0; j < poolSize; j++ ) {
-                    var index = i * poolSize + j;
-                    pool[index] = Instantiate( PoolMonoBehaviours[i] );
-                    pool[index].Available = true;
-                    pool[index].OnPoolReturnRequest = ReturnToQueue;
-                    poolQueue.Enqueue( pool[index] );
+                    var obj = InstantiatePoolObject( PoolMonoBehaviours[i] );
+                    obj.Available = true;
+                    obj.OnPoolReturnRequest = ReturnToQueue;
+                    poolQueue.Enqueue( obj );
+                    pool.Add( obj );
                 }
             }
         }
         else {
             pool = new List<T>( poolSize );
             for ( int i = 0; i < poolSize; i++ ) {
-                pool[i] = Instantiate( PoolMonoBehaviour );
-                pool[i].Available = true;
-                pool[i].OnPoolReturnRequest = ReturnToQueue;
+                var obj = InstantiatePoolObject( PoolMonoBehaviour );
+                obj.Available = true;
+                obj.OnPoolReturnRequest = ReturnToQueue;
+                pool.Add( obj );
                 poolQueue.Enqueue( pool[i] );
             }
         }

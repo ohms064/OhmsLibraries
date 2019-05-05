@@ -14,14 +14,19 @@ public abstract class Pool<T> : MonoBehaviour where T : PoolMonoBehaviour {
     public int poolSize = 1;
     public T[] PoolMonoBehaviours;
 #endif
+
     [ShowInInspector, HideInEditorMode, DisableInPlayMode]
     protected List<T> pool;
     protected Queue<T> poolQueue;
 
-#if UNITY_EDITOR && ODIN_INSPECTOR
+
+#if UNITY_EDITOR
+    private int _objectCount = 0;
+#if ODIN_INSPECTOR
     private bool ValidatePoolSize( int i ) {
         return i > 0;
     }
+    #endif
 #endif
 
     public override string ToString() {
@@ -64,6 +69,15 @@ public abstract class Pool<T> : MonoBehaviour where T : PoolMonoBehaviour {
     }
 
     protected abstract void InstantiateObjects();
+
+    protected virtual T InstantiatePoolObject( T poolObject ) {
+        var obj = Instantiate( poolObject );
+        #if UNITY_EDITOR
+        obj.name = string.Format( "{0}_{1}", obj.name, _objectCount );
+        _objectCount++;
+        #endif
+        return obj;
+    }
 
     /// <summary>
     /// Register an OnSpawn event on all the objects in the pool.
