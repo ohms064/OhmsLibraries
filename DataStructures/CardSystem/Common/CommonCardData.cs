@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using OhmsLibraries.GenericDataStructures.CardSystem;
 
 namespace DataStructures.CardSystem {
     public class StringCardData : CardData {

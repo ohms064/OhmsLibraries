@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DataStructures.CardSystem {
+namespace OhmsLibraries.DataStructures {
     public class Range {
         //Los rangos definene el límite superior (no incluyente) y todos empiezan en cero.
         private int[] ranges;

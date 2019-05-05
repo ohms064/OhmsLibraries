@@ -3,8 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using OhmsLibraries.DataStructures;
 
-namespace DataStructures.CardSystem {
+namespace OhmsLibraries.GenericDataStructures.CardSystem {
     public class CardDeck<T> where T : CardData {
         public Card<T>[] stack;
         private Range range;

@@ -3,11 +3,15 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if ODIN_INSPECTOR 
 using Sirenix.OdinInspector;
+#endif
 
-namespace UnityEngine.DataStructures.CardSystem {
-    public class CardDeck<T> : SerializedScriptableObject {
+namespace OhmsLibraries.DataStructures.CardSystem {
+    public class CardDeck<T> : ScriptableObject {
+#if ODIN_INSPECTOR
         [TableList]
+#endif
         public Card<T>[] stack = new Card<T>[1];
         private Range range;
         private int total;

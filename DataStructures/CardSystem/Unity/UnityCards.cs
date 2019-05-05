@@ -5,7 +5,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 
 
-namespace UnityEngine.DataStructures.CardSystem {
+namespace OhmsLibraries.DataStructures.CardSystem {
     [System.Serializable]
     public class Card<T> {
         public T data;
@@ -23,16 +23,16 @@ namespace UnityEngine.DataStructures.CardSystem {
     }
 
     #region CardData
-
+    [System.Serializable]
     public class StringCardData {
         public string info;
     }
-
+    [System.Serializable]
     public class StringIntCardData {
         public string text;
         public int value;
     }
-
+    [System.Serializable]
     public class IntCardData {
         public int value;
     }
