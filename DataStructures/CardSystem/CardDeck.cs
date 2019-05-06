@@ -6,7 +6,7 @@ using UnityEngine;
 using OhmsLibraries.DataStructures;
 
 namespace OhmsLibraries.GenericDataStructures.CardSystem {
-    public class CardDeck<T> where T : CardData {
+    public class CardDeck<T> {
         public Card<T>[] stack;
         private Range range;
         private int total;
@@ -28,6 +28,7 @@ namespace OhmsLibraries.GenericDataStructures.CardSystem {
                 percentages[i] = stack[i].appearance;
                 total += percentages[i];
             }
+            range = new Range( percentages );
         }
 
         public CardDeck ( bool infinite, params Card<T>[] cards ) : this( cards ) {
@@ -69,7 +70,7 @@ namespace OhmsLibraries.GenericDataStructures.CardSystem {
         }
     }
 
-    public partial class Card<T> where T : CardData {
+    public partial class Card<T> {
         internal int appearance;
     }
 }

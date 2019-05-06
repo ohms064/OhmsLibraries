@@ -4,7 +4,7 @@ using System.Text;
 using OhmsLibraries.DataStructures;
 
 namespace OhmsLibraries.GenericDataStructures.CardSystem {
-    public partial class Card<T> where T : CardData {
+    public partial class Card<T> {
         public T data;
         private int category;
         public int Category {
@@ -19,16 +19,12 @@ namespace OhmsLibraries.GenericDataStructures.CardSystem {
             this.appearance = appearance;
         }
 
-        public bool Corresponds<W> ( Card<W> other ) where W : CardData {
+        public bool Corresponds<W> ( Card<W> other ) {
             return other.category == category;
         }
 
         public bool Corresponds ( int other ) {
             return other == category;
         }
-    }
-
-    public class CardData {
-
     }
 }

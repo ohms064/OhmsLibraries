@@ -4,16 +4,16 @@ using System.Text;
 using OhmsLibraries.GenericDataStructures.CardSystem;
 
 namespace DataStructures.CardSystem {
-    public class StringCardData : CardData {
+    public class StringCardData {
         public string info;
     }
 
-    public class StringIntCardData : CardData {
+    public class StringIntCardData {
         public string text;
         public int value;
     }
 
-    public class IntCardData : CardData {
+    public class IntCardData {
         public int value;
     }
 }
