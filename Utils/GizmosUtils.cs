@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace UnityEditor {
+namespace OhmsLibraries.Tools.Editor {
     public class GizmosUtils {
         public static void DrawRect( Rect rect ) {
             Vector3 topLeft = new Vector3( rect.xMin, rect.yMax );

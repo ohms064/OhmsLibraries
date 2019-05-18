@@ -5,18 +5,18 @@ using UnityEngine.Events;
 
 public class PoolMonobehaviours_UnityEvents : MonoBehaviour {
     public UnitySpawnEvent OnSpawn, OnDespawn ;
-    private PoolMonoBehaviour poolMono;
+    protected PoolMonoBehaviour poolMono;
 
     private void Awake() {
         poolMono = GetComponent<PoolMonoBehaviour>();
     }
 
-    private void OnEnable() {
+    protected virtual void OnEnable() {
         poolMono.OnSpawn += OnSpawn.Invoke;
         poolMono.OnDespawn += OnDespawn.Invoke;
     }
 
-    private void OnDisable() {
+    protected virtual void OnDisable() {
         poolMono.OnSpawn -= OnSpawn.Invoke;
         poolMono.OnDespawn -= OnDespawn.Invoke;
     }

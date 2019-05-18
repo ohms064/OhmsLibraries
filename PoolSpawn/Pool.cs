@@ -8,7 +8,7 @@ public abstract class Pool<T> : MonoBehaviour where T : PoolMonoBehaviour {
 #if ODIN_INSPECTOR
     [ValidateInput( "ValidatePoolSize" )]
     public int poolSize = 1;
-    [AssetsOnly]
+    [AssetsOnly, HideInInlineEditors]
     public T[] PoolMonoBehaviours;
 #else
     public int poolSize = 1;
@@ -45,6 +45,12 @@ public abstract class Pool<T> : MonoBehaviour where T : PoolMonoBehaviour {
         for ( int i = 0; i < pool.Count; i++ ) {
             if ( !pool[i].Available )
                 yield return pool[i];
+        }
+    }
+
+    public void DespawnAll() {
+        foreach ( var obj in GetUnavailableObjects() ) {
+            obj.Despawn();
         }
     }
 

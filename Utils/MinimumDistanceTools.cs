@@ -25,9 +25,9 @@ namespace OhmsLibraries.Tools.Distance {
         public static int GetClosest( this Transform origin, params Transform[] points ) {
             int index = 0;
             var comp = MinimumDistanceCondition( origin.position, points[0].position );
-            for( int i = 1; i < points.Length; i++ ) {
+            for ( int i = 1; i < points.Length; i++ ) {
                 var cond = MinimumDistanceCondition( origin.position, points[i].position );
-                if( cond > comp ) {
+                if ( cond > comp ) {
                     index = i;
                     comp = cond;
                 }
@@ -45,9 +45,9 @@ namespace OhmsLibraries.Tools.Distance {
         public static int GetClosest( this Transform origin, List<Transform> points ) {
             int index = 0;
             var comp = MinimumDistanceCondition( origin.position, points[0].position );
-            for( int i = 1; i < points.Count; i++ ) {
+            for ( int i = 1; i < points.Count; i++ ) {
                 var cond = MinimumDistanceCondition( origin.position, points[i].position );
-                if( cond > comp ) {
+                if ( cond > comp ) {
                     index = i;
                     comp = cond;
                 }
@@ -65,9 +65,9 @@ namespace OhmsLibraries.Tools.Distance {
         public static int GetFurthest( this Transform origin, Transform[] points ) {
             int index = 0;
             var comp = MinimumDistanceCondition( origin.position, points[0].position );
-            for( int i = 1; i < points.Length; i++ ) {
+            for ( int i = 1; i < points.Length; i++ ) {
                 var cond = MinimumDistanceCondition( origin.position, points[i].position );
-                if( cond < comp ) {
+                if ( cond < comp ) {
                     index = i;
                     comp = cond;
                 }
@@ -85,9 +85,9 @@ namespace OhmsLibraries.Tools.Distance {
         public static int GetFurthest( this Transform origin, List<Transform> points ) {
             int index = 0;
             var comp = MinimumDistanceCondition( origin.position, points[0].position );
-            for( int i = 1; i < points.Count; i++ ) {
+            for ( int i = 1; i < points.Count; i++ ) {
                 var cond = MinimumDistanceCondition( origin.position, points[i].position );
-                if( cond < comp ) {
+                if ( cond < comp ) {
                     index = i;
                     comp = cond;
                 }
@@ -106,15 +106,43 @@ namespace OhmsLibraries.Tools.Distance {
             float? comp = null;
             var keys = points.Keys;
             List<float> indices = new List<float>();
-            foreach( var k in keys ) {
+            foreach ( var k in keys ) {
                 var cond = MinimumDistanceCondition( origin.position, points[k].position );
                 indices.Add( cond );
-                if( comp == null ) {
+                if ( comp == null ) {
                     index = k;
                     comp = cond;
                 }
                 else {
-                    if( cond > comp ) {
+                    if ( cond > comp ) {
+                        index = k;
+                        comp = cond;
+                    }
+                }
+            }
+            return index;
+        }
+
+        /// <summary>
+        /// Get closests Transform from origin
+        /// </summary>
+        /// <param name="origin">The reference trnasform</param>
+        /// <param name="points">The other transform to find the nearest.</param>
+        /// <returns>The nearest index for the transform from origin.</returns>
+        public static T GetClosest<T, W>( this Transform origin, Dictionary<T, W> points ) where W : MonoBehaviour {
+            T index = default;
+            float? comp = null;
+            var keys = points.Keys;
+            List<float> indices = new List<float>();
+            foreach ( var k in keys ) {
+                var cond = MinimumDistanceCondition( origin.position, points[k].transform.position );
+                indices.Add( cond );
+                if ( comp == null ) {
+                    index = k;
+                    comp = cond;
+                }
+                else {
+                    if ( cond > comp ) {
                         index = k;
                         comp = cond;
                     }
