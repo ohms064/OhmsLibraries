@@ -20,10 +20,9 @@ namespace OhmsLibraries.GenericDataStructures.CardSystem {
                 return total;
             }
         }
+
         public CardDeck ( List<Card<T>> cards ) {
-            var seed = DateTime.Now.Hour * 1000 + DateTime.Now.Minute * 100 + DateTime.Now.Second * 10 + DateTime.Now.Millisecond;
-            UnityEngine.Random.InitState( seed );
-            Debug.Log( $"Seed {seed}" );
+
             this.stack = cards;
             percentages = new int[stack.Count];
             total = 0;
@@ -39,9 +38,6 @@ namespace OhmsLibraries.GenericDataStructures.CardSystem {
         }
 
         public CardDeck ( bool infinite, int overrideAppearance, List<Card<T>> cards ) {
-            var seed = DateTime.Now.Hour * 1000 + DateTime.Now.Minute * 100 + DateTime.Now.Second * 10 + DateTime.Now.Millisecond;
-            UnityEngine.Random.InitState( seed );
-            Debug.Log( $"Seed {seed}" );
             this.stack = cards;
             percentages = new int[stack.Count];
             total = 0;
@@ -51,6 +47,12 @@ namespace OhmsLibraries.GenericDataStructures.CardSystem {
             }
             range = new Range( percentages );
             this.infinite = infinite;
+        }
+
+        public void Randomize() {
+            var seed = DateTime.Now.Hour * 1000 + DateTime.Now.Minute * 100 + DateTime.Now.Second * 10 + DateTime.Now.Millisecond;
+            UnityEngine.Random.InitState( seed );
+            Debug.Log( $"Seed {seed}" );
         }
 
         public Card<T> DrawCard () {
