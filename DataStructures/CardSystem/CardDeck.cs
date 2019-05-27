@@ -7,7 +7,7 @@ using OhmsLibraries.DataStructures;
 
 namespace OhmsLibraries.GenericDataStructures.CardSystem {
     public class CardDeck<T> {
-        public Card<T>[] stack;
+        public List<Card<T>> stack;
         private Range range;
         private int total;
         private int[] percentages;
@@ -20,9 +20,11 @@ namespace OhmsLibraries.GenericDataStructures.CardSystem {
                 return total;
             }
         }
-        public CardDeck ( params Card<T>[] cards ) {
+
+        public CardDeck ( List<Card<T>> cards ) {
+
             this.stack = cards;
-            percentages = new int[stack.Length];
+            percentages = new int[stack.Count];
             total = 0;
             for ( int i = 0; i < percentages.Length; i++ ) {
                 percentages[i] = stack[i].appearance;
@@ -31,13 +33,13 @@ namespace OhmsLibraries.GenericDataStructures.CardSystem {
             range = new Range( percentages );
         }
 
-        public CardDeck ( bool infinite, params Card<T>[] cards ) : this( cards ) {
+        public CardDeck ( bool infinite, List<Card<T>> cards ) : this( cards ) {
             this.infinite = infinite;
         }
 
-        public CardDeck ( bool infinite, int overrideAppearance, params Card<T>[] cards ) {
+        public CardDeck ( bool infinite, int overrideAppearance, List<Card<T>> cards ) {
             this.stack = cards;
-            percentages = new int[stack.Length];
+            percentages = new int[stack.Count];
             total = 0;
             for ( int i = 0; i < percentages.Length; i++ ) {
                 percentages[i] = overrideAppearance;
@@ -45,6 +47,12 @@ namespace OhmsLibraries.GenericDataStructures.CardSystem {
             }
             range = new Range( percentages );
             this.infinite = infinite;
+        }
+
+        public void Randomize() {
+            var seed = DateTime.Now.Hour * 1000 + DateTime.Now.Minute * 100 + DateTime.Now.Second * 10 + DateTime.Now.Millisecond;
+            UnityEngine.Random.InitState( seed );
+            Debug.Log( $"Seed {seed}" );
         }
 
         public Card<T> DrawCard () {
@@ -67,6 +75,10 @@ namespace OhmsLibraries.GenericDataStructures.CardSystem {
 
         public void Reset () {
             range = new Range( percentages );
+            total = 0;
+            for(int i = 0; i < percentages.Length; i++ ) {
+                total += percentages[i];
+            }
         }
     }
 

@@ -13,7 +13,7 @@ namespace OhmsLibraries.SceneManagement {
         [SerializeField] bool isDefault;
 
         void Start() {
-            if (isDefault)
+            if ( isDefault )
                 SetData();
         }
 

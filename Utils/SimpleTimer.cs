@@ -9,7 +9,7 @@ public class SimpleTimer : MonoBehaviour {
     public float timer;
     public bool countOnStart;
     public bool realTime;
-    public UnityEvent OnTimerEnd;
+    public UnityEvent OnTimerEnd = new UnityEvent();
     private float _currentTimer;
 
     private void Start() {
@@ -29,7 +29,7 @@ public class SimpleTimer : MonoBehaviour {
         else {
             yield return new WaitForSeconds( timer );
         }
-
+        OnTimerEnd.Invoke();
     }
 }
 

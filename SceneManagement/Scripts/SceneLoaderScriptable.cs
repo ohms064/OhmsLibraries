@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Sirenix.Serialization;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-    namespace OhmsLibraries.SceneManagement {
+namespace OhmsLibraries.SceneManagement {
     public delegate void SceneDelegate();
 
     public delegate void SceneSetter();
@@ -38,17 +38,16 @@ using UnityEngine.SceneManagement;
         }
 
 
-        public void StartLoadAsync( string[] ids, SceneDelegate sceneCallback = null )
-        {
+        public void StartLoadAsync( string[] ids, SceneDelegate sceneCallback = null ) {
             var required = ids.Length;
             var current = 0;
             foreach ( var id in ids ) {
-                Loader.StartCoroutine(LoadAsync(id, () => {
-                        current++;
-                        if (required == current) 
-                            sceneCallback?.Invoke();
-                    }
-                ) );   
+                Loader.StartCoroutine( LoadAsync( id, () => {
+                    current++;
+                    if ( required == current )
+                        sceneCallback?.Invoke();
+                }
+                ) );
             }
         }
 
@@ -66,7 +65,7 @@ using UnityEngine.SceneManagement;
 
         public void LoadScene( SceneDataScriptable scene, LoadSceneMode mode ) {
             foreach ( var sceneId in scene.sceneIds ) {
-                SceneManager.LoadScene( sceneId, mode );    
+                SceneManager.LoadScene( sceneId, mode );
             }
             if ( mode == LoadSceneMode.Additive ) {
                 SceneManager.SetActiveScene( scene.Scene );

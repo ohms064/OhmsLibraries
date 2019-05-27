@@ -8,23 +8,23 @@ using OhmsLibraries.SceneManagement.Navigation;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-    namespace OhmsLibraries.SceneManagement {
+namespace OhmsLibraries.SceneManagement {
     [CreateAssetMenu( menuName = "Scene Management/Scene Data" )]
     public class SceneDataScriptable : NavigationAction {
         public bool loadingScreen;
-        [ShowIf("loadingScreen")]
+        [ShowIf( "loadingScreen" )]
         public float simulatedWaitTime = 1f;
         [OnValueChanged( "LoadSceneModeChanged" )]
         public bool addToStack;
-        [OnValueChanged( "LoadSceneModeChanged" ), HideIf("loadingScreen")]
+        [OnValueChanged( "LoadSceneModeChanged" ), HideIf( "loadingScreen" )]
         public LoadSceneMode mode;
         public string levelName;
         [ValueDropdown( "e_currentScenes" ), ValidateInput( "ValidateSceneId", "Scene is not in build settings and will cause an exception at runtime if used." ), Required]
         public string[] sceneIds;
-        [ValueDropdown( "e_currentScenes" ), ValidateInput( "ValidateSceneId", "Scene is not in build settings and will cause an exception at runtime if used." ), 
-        ShowIf("loadingScreen")]
+        [ValueDropdown( "e_currentScenes" ), ValidateInput( "ValidateSceneId", "Scene is not in build settings and will cause an exception at runtime if used." ),
+         ShowIf( "loadingScreen" )]
         public string loadingSceneId;
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
 
         private void LoadSceneModeChanged( LoadSceneMode m ) {
             addToStack &= m != LoadSceneMode.Additive;
@@ -45,7 +45,7 @@ using UnityEditor;
 
         private bool ValidateSceneId( string[] ids ) {
             foreach ( var id in ids ) {
-                if ( !e_currentScenes.Contains(id) ) return false;
+                if ( !e_currentScenes.Contains( id ) ) return false;
             }
             return true;
         }
@@ -58,7 +58,7 @@ using UnityEditor;
             output = output.Substring( 0, index2 );
             return output;
         }
-    #endif
+#endif
         [Required]
         public SceneLoaderScriptable sceneManager;
 
@@ -72,22 +72,22 @@ using UnityEditor;
             LoadScene();
         }
 
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
         private void Reset() {
             sceneManager = Resources.FindObjectsOfTypeAll<SceneLoaderScriptable>().FirstOrDefault();
         }
-    #endif
+#endif
 
         public void LoadScene() {
             if ( sceneManager.data.addToStack ) {
                 BackStack.Push( sceneManager.data.LoadScene );
             }
 
-            if (loadingScreen) {
-                sceneManager.LoadWithSceneLoader(this);
+            if ( loadingScreen ) {
+                sceneManager.LoadWithSceneLoader( this );
             }
             else {
-                sceneManager.LoadScene(this, mode);
+                sceneManager.LoadScene( this, mode );
             }
         }
 
@@ -98,7 +98,7 @@ using UnityEditor;
             sceneManager.LoadScene( this, mode );
         }
 
-        public void SetAsActiveScene(){
+        public void SetAsActiveScene() {
 
         }
     }

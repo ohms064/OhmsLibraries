@@ -21,6 +21,14 @@ public class ObjectsPool<T> : Pool<T> where T : PoolMonoBehaviour {
         InstantiateObjects();
     }
 
+    private void OnDestroy() {
+        for ( int i = 0; i < pool.Count; i++ ) {
+            if ( pool[i] == null )
+                continue;
+            Destroy( pool[i].gameObject );
+        }
+    }
+
     /// <summary>
     /// Creates all the objects to be used in the pool.
     /// </summary>
