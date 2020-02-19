@@ -1,7 +1,7 @@
 {
     "name": "com.ohms.utilities",
-    "displayName": "Ohms Libraries,
-    "version": "0.2.0",
+    "displayName": "Ohms Libraries",
+    "version": "0.2.1",
     "unity": "2019.1",
     "description": "Elementos que ocupo con frecuencia",
     "keywords": ["ohms"],
